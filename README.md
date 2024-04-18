@@ -1,1 +1,1 @@
-# -raster_graphics_editor
+# raster_graphics_editor
