@@ -110,5 +110,23 @@ void GUIMyFrame1::Repaint()
 
 void GUIMyFrame1::Brightness(int value)
 {
- // TO DO: Zmiana jasnosci obrazu. value moze przyjmowac wartosci od -100 do 100
+	Img_Cpy = Img_Org.Copy();
+	unsigned char* array_RGB_Img = Img_Cpy.GetData();
+	size_t size = 3 * Img_Cpy.GetWidth() * Img_Cpy.GetHeight(); //3 - one pixel have 3 colors
+
+	for (size_t i = 0; i < size; i++)
+	{
+		if (array_RGB_Img[i] + value > 255)
+		{
+			array_RGB_Img[i] = 255;
+		}
+		else if (array_RGB_Img[i] + value < 0)
+		{
+			array_RGB_Img[i] = 0;
+		}
+		else
+		{
+			array_RGB_Img[i] = array_RGB_Img[i] + value;
+		}
+	}
 }
