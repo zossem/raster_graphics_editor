@@ -100,7 +100,7 @@ void GUIMyFrame1::Contrast(int value)
 	size_t size = 3 * Img_Cpy.GetWidth() * Img_Cpy.GetHeight(); //3 - one pixel have 3 colors
 
 	value = value * 255 / 100;
-	double contrast_improvement_factor = (259.0 * (255.0 + value)) / (255.0 * (259.0 - value)); //https://swistak.codes/post/podstawowe-operacje-na-barwach/#zmiana-kontrastu
+	double contrast_improvement_factor = (259.0 * (255.0 + value)) / (255.0 * (259.0 - value));
 
 	for (size_t i = 0; i < size; i++)
 	{
@@ -109,15 +109,15 @@ void GUIMyFrame1::Contrast(int value)
 		if (changed_color > 255)
 		{
 			array_RGB_Img[i] = 255;
-		}			
+		}
 		else if (changed_color < 0)
 		{
 			array_RGB_Img[i] = 0;
-		}			
+		}
 		else
 		{
 			array_RGB_Img[i] = changed_color;
-		}			
+		}
 	}
 }
 
