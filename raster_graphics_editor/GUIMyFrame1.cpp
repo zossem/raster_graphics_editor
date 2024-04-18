@@ -18,42 +18,50 @@ void GUIMyFrame1::m_scrolledWindow_update( wxUpdateUIEvent& event )
 
 void GUIMyFrame1::m_b_grayscale_click( wxCommandEvent& event )
 {
- // TO DO: Konwersja do skali szarosci    
+	Img_Cpy = Img_Org.Copy();
+	Img_Cpy = Img_Cpy.ConvertToGreyscale();  
 }
 
 void GUIMyFrame1::m_b_blur_click( wxCommandEvent& event )
 {
- // TO DO: Rozmywanie obrazu (blur)
+	Img_Cpy = Img_Org.Copy();
+	Img_Cpy = Img_Cpy.Blur(5);
 }
 
 void GUIMyFrame1::m_b_mirror_click( wxCommandEvent& event )
 {
- // TO DO: Odbicie lustrzane
+	Img_Cpy = Img_Org.Copy();
+	Img_Cpy = Img_Cpy.Mirror();
 }
 
 void GUIMyFrame1::m_b_replace_click( wxCommandEvent& event )
 {
- // TO DO: Zamiana kolorow 
+	Img_Cpy = Img_Org.Copy();
+	Img_Cpy.Replace(254, 0, 0, 0, 0, 255);
 }
 
 void GUIMyFrame1::m_b_rescale_click( wxCommandEvent& event )
 {
- // TO DO: Zmiana rozmiarow do 320x240
+	Img_Cpy = Img_Org.Copy();
+	Img_Cpy.Rescale(320, 240);
 }
 
 void GUIMyFrame1::m_b_rotate_click( wxCommandEvent& event )
 {
- // TO DO: Obrot o 30 stopni
+	Img_Cpy = Img_Org.Copy();
+	Img_Cpy = Img_Cpy.Rotate(30 * (M_PI / 180.0), wxPoint(Img_Cpy.GetSize().GetWidth() / 2, Img_Cpy.GetSize().GetHeight() / 2));
 }
 
 void GUIMyFrame1::m_b_rotate_hue_click( wxCommandEvent& event )
 {
- // TO DO: Przesuniecie Hue o 180 stopni
+	Img_Cpy = Img_Org.Copy();
+	Img_Cpy.RotateHue(0.5);
 }
 
 void GUIMyFrame1::m_b_mask_click( wxCommandEvent& event )
 {
- // TO DO: Ustawienie maski obrazu
+	Img_Cpy = Img_Org.Copy();
+	Img_Cpy.SetMaskFromImage(Img_Mask, 0, 0, 0);
 }
 
 void GUIMyFrame1::m_s_brightness_scroll( wxScrollEvent& event )
@@ -93,7 +101,9 @@ void GUIMyFrame1::Contrast(int value)
 void GUIMyFrame1::Repaint()
 {
  wxBitmap bitmap(Img_Cpy);          // Tworzymy tymczasowa bitmape na podstawie Img_Cpy
- wxClientDC dc(m_scrolledWindow);   // Pobieramy kontekst okna
+ wxClientDC dc1(m_scrolledWindow);   // Pobieramy kontekst okna
+ wxBufferedDC dc(&dc1);
+ dc.Clear();
  m_scrolledWindow->DoPrepareDC(dc); // Musimy wywolac w przypadku wxScrolledWindow, zeby suwaki prawidlowo dzialaly
  dc.DrawBitmap(bitmap, 0, 0, true); // Rysujemy bitmape na kontekscie urzadzenia
 }
