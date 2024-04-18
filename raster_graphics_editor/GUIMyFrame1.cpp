@@ -95,7 +95,30 @@ void GUIMyFrame1::m_b_threshold_click( wxCommandEvent& event )
 
 void GUIMyFrame1::Contrast(int value)
 {
- // TO DO: Zmiana kontrastu obrazu. value moze przyjmowac wartosci od -100 do 100
+	Img_Cpy = Img_Org.Copy();
+	unsigned char* array_RGB_Img = Img_Cpy.GetData();
+	size_t size = 3 * Img_Cpy.GetWidth() * Img_Cpy.GetHeight(); //3 - one pixel have 3 colors
+
+	value = value * 255 / 100;
+	double contrast_improvement_factor = (259.0 * (255.0 + value)) / (255.0 * (259.0 - value)); //https://swistak.codes/post/podstawowe-operacje-na-barwach/#zmiana-kontrastu
+
+	for (size_t i = 0; i < size; i++)
+	{
+		int changed_color = contrast_improvement_factor * (array_RGB_Img[i] - 128) + 128;
+
+		if (changed_color > 255)
+		{
+			array_RGB_Img[i] = 255;
+		}			
+		else if (changed_color < 0)
+		{
+			array_RGB_Img[i] = 0;
+		}			
+		else
+		{
+			array_RGB_Img[i] = changed_color;
+		}			
+	}
 }
 
 void GUIMyFrame1::Repaint()
