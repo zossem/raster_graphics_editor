@@ -82,14 +82,93 @@ Contrast(m_s_contrast->GetValue() - 100);
 Repaint();
 }
 
+int getColor(unsigned char* image, int y, int x, int h, int w, int color)
+{
+	if (((y * w + x) * 3 + color) >= 0 && ((y * w + x) * 3 + color) < w * h * 3)
+		return (int)image[(y * w + x) * 3 + color];
+	else
+		return 0;
+}
+
+int PrewittKernel(unsigned char* image, int x, int y, int h, int w, int color)
+{
+	int sum = 0;
+	sum -= getColor(image, y - 1, x - 1, h, w, color);
+	sum -= getColor(image, y, x - 1, h, w, color);
+	sum -= getColor(image, y + 1, x - 1, h, w, color);
+	sum += getColor(image, y - 1, x + 1, h, w, color);
+	sum += getColor(image, y, x + 1, h, w, color);
+	sum += getColor(image, y + 1, x + 1, h, w, color);
+	return sum;
+}
+
+
 void GUIMyFrame1::m_b_prewitt_click( wxCommandEvent& event )
 {
- // TO DO: Pionowa maska Prewitta
+	Img_Cpy = Img_Org.Copy();
+	wxImage Img_Tmp = Img_Cpy.Copy();
+
+	unsigned char* array_RGB_Copy = Img_Cpy.GetData();
+	unsigned char* array_RGB_Img = Img_Tmp.GetData();
+	int width = Img_Tmp.GetWidth();
+	int height = Img_Tmp.GetHeight();
+
+	int gPrewitt;
+	int red_value, green_value, blue_value;
+
+	for (size_t y = 1; y < height - 1; y++)
+	{
+		for (size_t x = 1; x < width - 1; x++)
+		{
+			gPrewitt = PrewittKernel(array_RGB_Img, x, y, height, width, 0) / 3;
+
+			red_value = abs(gPrewitt);
+			red_value = (red_value < 0) ? 0 : red_value;
+			red_value = (red_value > 255) ? 255 : red_value;
+
+			array_RGB_Copy[(y * width + x) * 3 + 0] = red_value;
+
+			
+
+			gPrewitt = PrewittKernel(array_RGB_Img, x, y, height, width, 1) / 3;
+
+			green_value = abs(gPrewitt);
+			green_value = (green_value < 0) ? 0 : green_value;
+			green_value = (green_value > 255) ? 255 : green_value;
+
+			array_RGB_Copy[(y * width + x) * 3 + 1] = green_value;
+
+			
+
+			gPrewitt = PrewittKernel(array_RGB_Img, x, y, height, width, 2) / 3;
+
+			blue_value = abs(gPrewitt);
+			blue_value = (blue_value < 0) ? 0 : blue_value;
+			blue_value = (blue_value > 255) ? 255 : blue_value;
+
+			array_RGB_Copy[(y * width + x) * 3 + 2] = blue_value;
+		}
+	}
 }
 
 void GUIMyFrame1::m_b_threshold_click( wxCommandEvent& event )
 {
- // TO DO: Prog o wartosci 128 dla kazdego kanalu niezaleznie
+	Img_Cpy = Img_Org.Copy();
+	unsigned char* array_RGB_Img = Img_Cpy.GetData();
+	size_t size = 3 * Img_Cpy.GetWidth() * Img_Cpy.GetHeight(); //3 - one pixel have 3 colors
+
+
+	for (size_t i = 0; i < size; i++)
+	{
+		if (array_RGB_Img[i] > 128)
+		{
+			array_RGB_Img[i] = 255;
+		}
+		else
+		{
+			array_RGB_Img[i] = 0;
+		}
+	}
 }
 
 
